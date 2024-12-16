@@ -71,11 +71,11 @@ Function LB_Ownership()
 EndFunction
 
 Function LB_SearchLightClose()
-	Cell kCell = Game.GetPlayer().GetParentCell()
+    Cell kCell = Game.GetPlayer().GetParentCell()
     ObjectReference closestLightRef = None
-	  Int i = kCell.GetNumRefs(31) - 1
+    Int i = kCell.GetNumRefs(31) - 1
     Float closestDistance = 25.0
-	  While i >= 0
+    While i >= 0
         LB_LightFlagClose = kCell.GetNthRef(i, 31)
         Float distance = self.GetDistance(LB_LightFlagClose)
         If (LB_LightFlagClose != None) && (distance < closestDistance) && (LB_LightFlagClose != self)
@@ -83,5 +83,5 @@ Function LB_SearchLightClose()
             ConsoleUtil.ExecuteCommand("Disable")
         EndIf
         i -= 1
-	EndWhile
+    EndWhile
 EndFunction
