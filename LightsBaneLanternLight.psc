@@ -17,7 +17,7 @@ Bool LB_WasTaken = False
 Event OnCellLoad()
     LB_SearchLightClose()
     self.Reset()
-	  self.ClearDestruction()
+    self.ClearDestruction()
     If LB_DestructibleFlag != None
         ConsoleUtil.ExecuteCommand("Enable")
     EndIf
