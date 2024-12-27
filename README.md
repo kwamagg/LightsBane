@@ -7,3 +7,4 @@ The source code of my mod with the corresponding name.
 - powerofthree's Papyrus Extender https://www.nexusmods.com/skyrimspecialedition/mods/22854
 - Base Object Swapper https://www.nexusmods.com/skyrimspecialedition/mods/60805
 - ConsoleUtilSSE NG https://www.nexusmods.com/skyrimspecialedition/mods/76649
+- MCM Helper https://www.nexusmods.com/skyrimspecialedition/mods/53000
