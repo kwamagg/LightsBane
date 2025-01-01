@@ -22,6 +22,7 @@ Event OnCellLoad()
 
         If LB_WasBroken
             ConsoleUtil.SetSelectedReference(self)
+            ConsoleUtil.ExecuteCommand("str 0")
             ConsoleUtil.ExecuteCommand("Enable")
         EndIf
 
@@ -38,9 +39,10 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
     If akNewContainer == Game.GetPlayer()
         LB_Ownership()
         Game.GetPlayer().RemoveItem(self.GetBaseObject(), 1, True)
-        self.Delete()
         Game.GetPlayer().AddItem(Lantern, 1, True)
         LB_WasTaken = True
+        ConsoleUtil.SetSelectedReference(self)
+        ConsoleUtil.ExecuteCommand("Disable")
     EndIf
 EndEvent
 
@@ -54,11 +56,12 @@ EndEvent
 
 Function LB_Break()
     LB_LanternBreakingSound.Play(self)
+    ConsoleUtil.SetSelectedReference(self)
+    ConsoleUtil.ExecuteCommand("str 0.00001")
     self.PlaceAtMe(LB_DustDropExplosionSm)
     LB_RemainsFlag = self.PlaceAtMe(LB_LanternRemains, 1, True, False)
     self.DamageObject(90.0)
-    ConsoleUtil.SetSelectedReference(self)
-    ConsoleUtil.ExecuteCommand("Disable") ; If using regular self.Disable(), won't be able to respawn.
+    ConsoleUtil.ExecuteCommand("Disable")
 EndFunction
 
 Function LB_Ownership()
