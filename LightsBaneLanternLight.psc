@@ -1,5 +1,6 @@
 Scriptname LightsBaneLanternLight extends ObjectReference
 
+
 ActorBase Property ownerActor = None Auto
 Faction Property ownerFaction = None  Auto
 MiscObject Property LB_LanternRemains Auto
@@ -13,27 +14,29 @@ GlobalVariable Property LB_CD_Slider Auto
 ObjectReference LB_LightFlagClose
 ObjectReference LB_RemainsFlag
 
-Bool LB_WasBroken = False
 Bool LB_WasTaken = False
+
+
 
 Event OnCellLoad()
     If !LB_WasTaken && (LB_DL_Toggle.GetValue() != 0.0)
-        LB_SearchLightClose()
 
-        If LB_WasBroken
-            ConsoleUtil.SetSelectedReference(self)
-            ConsoleUtil.ExecuteCommand("str 0")
-            ConsoleUtil.ExecuteCommand("Enable")
+        If self.IsInInterior()
+            LB_SearchLightClose()
         EndIf
+
+        ConsoleUtil.SetSelectedReference(self)
+        ConsoleUtil.ExecuteCommand("str 0")
+        self.Enable()
 
         If LB_RemainsFlag != None
             LB_RemainsFlag.Delete()
         EndIf
 
         LB_RemainsFlag = None
-        LB_WasBroken = False
     EndIf
 EndEvent
+
 
 Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldContainer)
     If akNewContainer == Game.GetPlayer()
@@ -41,28 +44,36 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
         Game.GetPlayer().RemoveItem(self.GetBaseObject(), 1, True)
         Game.GetPlayer().AddItem(Lantern, 1, True)
         LB_WasTaken = True
-        ConsoleUtil.SetSelectedReference(self)
-        ConsoleUtil.ExecuteCommand("Disable")
+        self.Delete()
     EndIf
 EndEvent
+
 
 Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
-    If !LB_WasBroken && (LB_DL_Toggle.GetValue() != 0.0)
+    If (LB_DL_Toggle.GetValue() != 0.0)
+        GoToState("Busy")
+        LB_LanternBreakingSound.Play(self)
+        self.PlaceAtMe(LB_DustDropExplosionSm)
         LB_Ownership()
         LB_Break()
-        LB_WasBroken = True
+        GoToState("")
     EndIf
 EndEvent
 
+
 Function LB_Break()
-    LB_LanternBreakingSound.Play(self)
     ConsoleUtil.SetSelectedReference(self)
     ConsoleUtil.ExecuteCommand("str 0.00001")
-    self.PlaceAtMe(LB_DustDropExplosionSm)
     LB_RemainsFlag = self.PlaceAtMe(LB_LanternRemains, 1, True, False)
     self.DamageObject(90.0)
-    ConsoleUtil.ExecuteCommand("Disable")
+    LB_SearchLightClose()
+    If self.IsInInterior()
+        self.Disable()
+    Else
+        self.Delete()
+    EndIf
 EndFunction
+
 
 Function LB_Ownership()
     Cell akCell = Game.GetPlayer().GetParentCell()
@@ -78,6 +89,7 @@ Function LB_Ownership()
     EndIf
 EndFunction
 
+
 Function LB_SearchLightClose()
 	Cell kCell = Game.GetPlayer().GetParentCell()
 	Int i = kCell.GetNumRefs(31) - 1
@@ -92,3 +104,11 @@ Function LB_SearchLightClose()
         i -= 1
 	EndWhile
 EndFunction
+
+
+State Busy
+
+    Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
+    EndEvent
+
+EndState
