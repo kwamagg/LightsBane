@@ -3,6 +3,7 @@ Scriptname LightsBaneMCM extends MCM_ConfigBase
 Quest Property LB_ShadowSneakQuest Auto
 GlobalVariable Property LB_DL_Toggle Auto
 GlobalVariable Property LB_HID_Toggle Auto
+GlobalVariable Property LB_SearchAllowed Auto
 GlobalVariable Property LB_CD_Slider Auto
 
 Bool migrated = False
@@ -54,6 +55,10 @@ Event OnSettingChange(String a_ID)
         LB_HID_Toggle.SetValue(GetModSettingBool("bHID_Toggle:General") as Float)
         (LB_ShadowSneakQuest.GetAlias(0) as ReferenceAlias).OnPlayerLoadGame()
         RefreshMenu()
+    ElseIf a_ID == "bSearchAllowed:General"
+        LB_SearchAllowed.SetValue(GetModSettingBool("bSearchAllowed:General") as Float)
+        (LB_ShadowSneakQuest.GetAlias(0) as ReferenceAlias).OnPlayerLoadGame()
+        RefreshMenu()
     ElseIf a_ID == "fCD_Slider:General"
         LB_CD_Slider.SetValue(GetModSettingFloat("fCD_Slider:General") as Float)
         (LB_ShadowSneakQuest.GetAlias(0) as ReferenceAlias).OnPlayerLoadGame()
@@ -68,6 +73,7 @@ EndEvent
 Function Default()
     SetModSettingBool("bDL_Toggle:General", True)
     SetModSettingBool("bHID_Toggle:General", True)
+    SetModSettingBool("bSearchAllowed:General", True)
     SetModSettingFloat("fCD_Slider:General", 25.0)
 
     SetModSettingBool("bEnabled:Maintenance", True)
@@ -79,6 +85,7 @@ EndFunction
 Function Load()
     LB_DL_Toggle.SetValue(GetModSettingBool("bDL_Toggle:General") as Float)
     LB_HID_Toggle.SetValue(GetModSettingBool("bHID_Toggle:General") as Float)
+    LB_SearchAllowed.SetValue(GetModSettingBool("bSearchAllowed:General") as Float)
     LB_CD_Slider.SetValue(GetModSettingFloat("fCD_Slider:General") as Float)
     (LB_ShadowSneakQuest.GetAlias(0) as ReferenceAlias).OnPlayerLoadGame()
 EndFunction
@@ -94,5 +101,6 @@ EndFunction
 Function MigrateToMCMHelper()
     SetModSettingBool("bDL_Toggle:General", LB_DL_Toggle.GetValue() as Bool)
     SetModSettingBool("bHID_Toggle:General", LB_HID_Toggle.GetValue() as Bool)
+    SetModSettingBool("bSearchAllowed:General", LB_SearchAllowed.GetValue() as Bool)
     SetModSettingFloat("fCD_Slider:General", LB_CD_Slider.GetValue() as Float)
 EndFunction
